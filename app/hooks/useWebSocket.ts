@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function useWebSocket() {
   const [isStreaming, setIsStreaming] = useState(false);
@@ -10,15 +10,20 @@ export default function useWebSocket() {
   const startStreaming = () => {
     if (!wsRef.current) {
       wsRef.current = new WebSocket(WS_URL);
+      wsRef.current.binaryType = "blob";  // Tell WebSocket to receive binary data
 
       wsRef.current.onopen = () => {
         console.log("WebSocket connected");
         setIsStreaming(true);
       };
 
-      wsRef.current.onmessage = (event) => {
+      wsRef.current.onmessage = async (event) => {
+        const imgBlob = event.data;  // Receive Blob data
         const img = new Image();
-        img.src = `data:image/jpeg;base64,${event.data}`;
+
+        // Convert Blob to a URL and set it as an image source
+        const imgUrl = URL.createObjectURL(imgBlob);
+        img.src = imgUrl;
 
         img.onload = () => {
           const canvas = canvasRef.current;
@@ -27,6 +32,7 @@ export default function useWebSocket() {
             ctx?.clearRect(0, 0, canvas.width, canvas.height);
             ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
           }
+          URL.revokeObjectURL(imgUrl);  // Free memory after rendering
         };
       };
 
