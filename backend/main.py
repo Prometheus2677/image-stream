@@ -1,12 +1,13 @@
 from fastapi import FastAPI
-from app.routes.websocket import router
-from app.config.settings import settings
+from app.routes.websocket import router as websocket_router
+from app.routes.upload import router as upload_router
 import uvicorn
 
 app = FastAPI()
 
-# Include WebSocket route
-app.include_router(router)
+# Include routes
+app.include_router(websocket_router)
+app.include_router(upload_router)
 
 if __name__ == "__main__":
-    uvicorn.run(app, host=settings.HOST, port=settings.PORT)
+    uvicorn.run(app, host="0.0.0.0", port=8000)
