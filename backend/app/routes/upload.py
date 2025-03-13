@@ -1,7 +1,7 @@
 from fastapi import APIRouter, UploadFile, File, BackgroundTasks, HTTPException
 from app.services.forwarder import forward_image
 from app.services.uploader import ImageUploader
-import os
+from app.config.settings import settings
 from typing import List
 from dotenv import load_dotenv
 from pydantic import BaseModel
@@ -12,11 +12,11 @@ load_dotenv(override=True)
 
 # Aerospike configuration
 AEROSPIKE_CONFIG = {
-    'hosts': [(os.getenv("AEROSPIKE_HOST"), int(os.getenv("AEROSPIKE_PORT")))]
+    'hosts': [(settings.AEROSPIKE_HOST, settings.AEROSPIKE_PORT)]
 }
-NAMESPACE = os.getenv("NAMESPACE")
-SET_NAME = os.getenv("SET_NAME")
-IMAGE_DIRECTORY = os.getenv("IMAGE_DIRECTORY")
+NAMESPACE = settings.NAMESPACE
+SET_NAME = settings.SET_NAME
+IMAGE_DIRECTORY = settings.IMAGE_FOLDER
 
 # Initialize the uploader
 uploader = ImageUploader(AEROSPIKE_CONFIG, NAMESPACE, SET_NAME, image_folder=IMAGE_DIRECTORY)
