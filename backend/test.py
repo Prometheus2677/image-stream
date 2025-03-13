@@ -2,7 +2,7 @@ import requests
 import time
 import os
 
-UPLOAD_URL = "http://0.0.0.0:8000/upload"
+UPLOAD_URL = "http://0.0.0.0:8000/upload-test"
 IMAGE_FOLDER = "images"
 
 image_files = sorted(

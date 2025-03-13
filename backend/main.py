@@ -2,8 +2,11 @@ from fastapi import FastAPI
 from app.routes.websocket import router as websocket_router
 from app.routes.upload import router as upload_router
 import uvicorn
+from dotenv import load_dotenv
 
 app = FastAPI()
+
+load_dotenv(override=True)
 
 # Include routes
 app.include_router(websocket_router)
