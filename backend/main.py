@@ -11,7 +11,7 @@ load_dotenv()
 app = FastAPI()
 
 # Load settings from .env
-IMAGE_FOLDER = os.getenv("IMAGE_FOLDER", "images")
+IMAGE_FOLDER = os.getenv("IMAGE_FOLDER", "xx")
 HOST = os.getenv("HOST", "0.0.0.0")
 PORT = int(os.getenv("PORT", 8000))
 
@@ -21,17 +21,17 @@ image_files = sorted([f for f in os.listdir(IMAGE_FOLDER) if f.endswith(('.jpg',
 async def send_images(websocket: WebSocket):
     """Stream images from folder at 24 FPS."""
     await websocket.accept()
+    
     while True:
         for img_file in image_files:
             img_path = os.path.join(IMAGE_FOLDER, img_file)
 
             # Read and encode image
-            img = cv2.imread(img_path)
-            _, buffer = cv2.imencode('.jpg', img)
-            encoded_string = base64.b64encode(buffer).decode('utf-8')
+            with open(img_path, "rb") as img_file:
+                encoded_string = base64.b64encode(img_file.read()).decode('utf-8')
 
             await websocket.send_text(encoded_string)
-            await asyncio.sleep(1/100)  # Maintain 24 FPS
+            await asyncio.sleep(1/24)  # Maintain 24 FPS
 
 @app.websocket("/stream")
 async def websocket_endpoint(websocket: WebSocket):
