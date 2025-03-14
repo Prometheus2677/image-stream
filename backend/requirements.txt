@@ -4,3 +4,5 @@ uvicorn           == 0.34.0
 websockets        == 15.0.1
 python-multipart  == 0.0.20
 requests          == 2.32.3
+pillow            == 11.1.0
+aerospike         == 16.0.2
