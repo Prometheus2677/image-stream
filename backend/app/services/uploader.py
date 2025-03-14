@@ -65,7 +65,6 @@ class ImageUploader:
             if self.stop_upload:
                 break
             self.store_image(os.path.join(self.image_folder, filename))
-            time.sleep(1 / 24)
 
     def stop_uploading(self):
         """Stops the upload process."""

@@ -42,11 +42,6 @@ async def upload_image(data: List[ImageDataUpload]):
                 continue
 
             chunk_info = {bin_entry.name: bin_entry.value for bin_entry in chunk.bins}
-
-            required_keys = ['image_data']
-            missing_keys = [key for key in required_keys if key not in chunk_info]
-            if missing_keys:
-                raise HTTPException(status_code=400, detail=f"Missing keys: {missing_keys}")
             image_data = chunk_info['image_data']
             image_data = base64.b64decode(image_data)
             # ✅ Forward image data to WebSocket clients

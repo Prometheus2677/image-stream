@@ -51,5 +51,9 @@ export default function useWebSocket() {
     }
   };
 
+  useEffect(() => {
+    startStreaming()
+  }, []);
+
   return { canvasRef, isStreaming, startStreaming, stopStreaming };
 }
