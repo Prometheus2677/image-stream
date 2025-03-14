@@ -6,6 +6,10 @@ from typing import List
 from dotenv import load_dotenv
 from pydantic import BaseModel
 import base64
+from io import BytesIO
+from PIL import Image
+import uuid
+import os
 
 router = APIRouter()
 load_dotenv(override=True)
@@ -43,9 +47,15 @@ async def upload_image(data: List[ImageDataUpload]):
 
             chunk_info = {bin_entry.name: bin_entry.value for bin_entry in chunk.bins}
             image_data = chunk_info['image_data']
-            image_data = base64.b64decode(image_data)
-            # ✅ Forward image data to WebSocket clients
-            await forward_image(image_data)
+            # Decode base64 image data
+            image_binary = base64.b64decode(image_data)
+
+            # Convert binary data into an image
+            image = Image.open(BytesIO(image_binary))
+
+            # Generate a unique filename and save as JPEG
+            file_path = os.path.join("output_dir", f"image_{uuid.uuid4()}.jpeg")
+            image.convert("RGB").save(file_path, "JPEG")  # Convert to RGB if needed
         return {"message": "Image forwarded"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
